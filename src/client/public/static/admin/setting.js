@@ -25,7 +25,9 @@ var vm = new Vue({
     },
     methods: {
         update: function (event) {
-            var flag = this.check_level_by_cycle()
+            // JAG: 允许阶段周目重叠。
+            // var flag = this.check_level_by_cycle()
+            var flag = true;
             if (!flag) {
                 alert('阶段对应周目错误。\n不同阶段的周目范围不能重叠，且下阶段开始周目必须等于上阶段结束周目加一');
                 return

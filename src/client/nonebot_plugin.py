@@ -51,12 +51,12 @@ bot = Yobot(
 
 from hoshino.service import Service
 
-sv = Service("yobot_remix", enable_on_default=True, visible=True)
+sv = Service("yobot", enable_on_default=True, visible=True)
 
 
 @sv.on_message()
 async def handle_msg(cqbot, context):
-    if context["message_type"] == "group" or context["message_type"] == "private":
+    if context["message_type"] == "group":
         reply = await bot.proc_async(context.copy())
     else:
         reply = None
@@ -73,7 +73,8 @@ async def handle_msg(context):
     else:
         reply = None
     if reply != "" and reply is not None:
-        return {"reply": reply, "at_sender": False}
+        await cqbot.send(context,reply)
+        # return {"reply": reply, "at_sender": False}
     else:
         return None
 

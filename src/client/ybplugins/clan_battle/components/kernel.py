@@ -20,6 +20,7 @@ from .multi_cq_utils import refresh
 
 _logger = logging.getLogger(__name__)
 
+# Replace \[CQ:at,qq=(\d+)\] with \[CQ:at,[^\]]*qq=(\d+)[^\]]*\]
 
 #初始化
 def init(self,
@@ -128,7 +129,7 @@ def execute(self, match_num, ctx):
 			_logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
 			asyncio.ensure_future(self._update_all_group_members_async(group_id))
 			return '本群所有成员已添加记录'
-		match = re.match(r'^加入[公工行]会 *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^加入[公工行]会 *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if match:
 			if match.group(1):
 				if ctx['sender']['role'] == 'member':
@@ -153,10 +154,10 @@ def execute(self, match_num, ctx):
 
 
 	elif match_num == 4:  # 报刀
-		match = re.match(r'^(?:报刀|刀) ?(?:[\-\=]([1-5]))? ?(\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)\])? *(昨[日天])?$', cmd)
+		match = re.match(r'^(?:报刀|刀) ?(?:[\-\=]([1-5]))? ?(\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *(昨[日天])?$', cmd)
 		if not match:
 			# 尝试使用另外的匹配模式
-			match = re.match(r'^(?:报刀|刀) ?([1-5])? (\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)\])? *(昨[日天])?$', cmd)
+			match = re.match(r'^(?:报刀|刀) ?([1-5])? (\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *(昨[日天])?$', cmd)
 			if not match:
 				return '报刀格式:\n报刀 100w（需先申请出刀）\n报刀 -1 100w（-1表示报在1王）'
 		unit = {
@@ -186,7 +187,7 @@ def execute(self, match_num, ctx):
 
 
 	elif match_num == 5:  # 尾刀
-		match = re.match(r'^(?:尾刀|尾) ?([1-5])? *(补偿|补|b|bc|B|BC|Bc|bC)? ?(?:\[CQ:at,qq=(\d+)\])? *(昨[日天])?$', cmd)
+		match = re.match(r'^(?:尾刀|尾) ?([1-5])? *(补偿|补|b|bc|B|BC|Bc|bC)? ?(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *(昨[日天])?$', cmd)
 		if not match: return
 		behalf = match.group(3) and int(match.group(3))
 		is_continue = match.group(2) and True or False
@@ -216,7 +217,7 @@ def execute(self, match_num, ctx):
 		return boss_status
 
 	elif match_num == 7:  # 预约
-		match = re.match(r'^预约([1-5]|表) *(?:[:：](.*))? *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^预约([1-5]|表) *(?:[:：](.*))? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if not match: return
 		msg = match.group(1)
 		note = match.group(2) or ''
@@ -253,7 +254,7 @@ def execute(self, match_num, ctx):
 		return back_msg
 
 	elif match_num == 11:  # 挂树
-		match = re.match(r'挂树 *([1-5])? *(?:\[CQ:at,qq=(\d+)\])? *(?:[\:：](.*))? *$', cmd)
+		match = re.match(r'挂树 *([1-5])? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *(?:[\:：](.*))? *$', cmd)
 		if not match: return
 		extra_msg = match.group(3)
 		boss_num = match.group(1) and int(match.group(1)) or False
@@ -274,7 +275,7 @@ def execute(self, match_num, ctx):
 		return msg
 
 	elif match_num == 12:  # 申请
-		match = re.match(r'^(?:进|申请出刀)(| )([1-5]) *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^(?:进|申请出刀)(| )([1-5]) *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if not match: return '申请出刀格式错误惹(っ °Д °;)っ\n如：申请出刀1 or 申请出刀1补偿@xxx'
 		boss_num = match.group(2)
 		is_continue = match.group(3) and True or False
@@ -291,7 +292,7 @@ def execute(self, match_num, ctx):
 		return boss_info
 
 	elif match_num == 13:  # 取消
-		match = re.match(r'^取消 *([1-5]|挂树|申请出刀|申请|出刀|出刀all|报伤害|sl|SL|预约) *([1-5])? *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^取消 *([1-5]|挂树|申请出刀|申请|出刀|出刀all|报伤害|sl|SL|预约) *([1-5])? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if not match: return
 		b = match.group(1)
 		boss_num = match.group(2) and match.group(2)
@@ -320,7 +321,7 @@ def execute(self, match_num, ctx):
 		return msg
 
 	elif match_num == 14:  # 取消申请出刀
-		match = re.match(r'^不(?:打|进)了 *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^不(?:打|进)了 *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if not match: return
 		behalf = match.group(1) and int(match.group(1))
 		if behalf: user_id = behalf
@@ -337,7 +338,7 @@ def execute(self, match_num, ctx):
 		return f'公会战面板：\n{url}\n建议添加到浏览器收藏夹或桌面快捷方式'
 
 	elif match_num == 16:  # SL
-		match = re.match(r'^(?:SL|sl) *([\?？])? *(?:\[CQ:at,qq=(\d+)\])? *([\?？])? *$', cmd)
+		match = re.match(r'^(?:SL|sl) *([\?？])? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *([\?？])? *$', cmd)
 		if not match: return
 		behalf = match.group(2) and int(match.group(2))
 		only_check = bool(match.group(1) or match.group(3))
@@ -358,7 +359,7 @@ def execute(self, match_num, ctx):
 			return back_msg
 
 	elif match_num == 17:  # 报伤害
-		match = re.match(r'^(?:打了|报伤害)(?:剩| |)(?:(\d+(?:s|S|秒))?(?:打了| |)(\d+)(?:w|W|万))? *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^(?:打了|报伤害)(?:剩| |)(?:(\d+(?:s|S|秒))?(?:打了| |)(\d+)(?:w|W|万))? *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if not match: return '格式出错(O×O)，如“报伤害 2s200w”或“报伤害 3s300w@xxx”'
 		s = match.group(1) or 1
 		if s != 1: s = re.sub(r'([a-z]|[A-Z]|秒)', '', s)
@@ -371,7 +372,7 @@ def execute(self, match_num, ctx):
 	
 	#TODO 权限申请封装func调用
 	elif match_num == 18:  #权限，设置意外无权限用户有权限
-		match = re.match(r'^权限 *(?:\[CQ:at,qq=(\d+)\])? *$', cmd)
+		match = re.match(r'^权限 *(?:\[CQ:at,[^\]]*qq=(\d+)[^\]]*\])? *$', cmd)
 		if match:
 			if match.group(1):
 				if ctx['sender']['role'] == 'member':

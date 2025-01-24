@@ -455,7 +455,7 @@ class Setting:
 
 async def download_icon(icon_path, boss_id):
     async with aiohttp.ClientSession() as ses:
-        async with ses.get(f'https://redive.estertion.win/icon/unit/{boss_id}.webp') as resp:
+        async with ses.get(f'https://wthee.xyz/redive/jp/resource/icon/unit/{boss_id}.webp') as resp:
             data = await resp.read()
     with open(icon_path, 'wb') as img:
         img.write(data)

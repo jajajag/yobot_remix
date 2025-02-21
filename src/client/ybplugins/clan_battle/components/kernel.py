@@ -154,13 +154,16 @@ def execute(self, match_num, ctx):
 
 
 	elif match_num == 4:  # 报刀
-		match = re.match(r'^(?:报刀|刀) ?(?:[\-\=]([1-5]))? ?(\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *(昨[日天])?$', cmd)
+		match = re.match(r'^(?:报刀|刀) ?(?:[\-\=]([1-5]))? ?(\d+)?([Ee亿Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *(昨[日天])?$', cmd)
 		if not match:
 			# 尝试使用另外的匹配模式
-			match = re.match(r'^(?:报刀|刀) ?([1-5])? (\d+)?([Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *(昨[日天])?$', cmd)
+			match = re.match(r'^(?:报刀|刀) ?([1-5])? (\d+)?([Ee亿Ww万Kk千])? *(补偿|补|b|bc|B|BC|Bc|bC)? *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *(昨[日天])?$', cmd)
 			if not match:
 				return '报刀格式:\n报刀 100w（需先申请出刀）\n报刀 -1 100w（-1表示报在1王）'
 		unit = {
+			'E': 100000000,
+			'e': 100000000,
+			'亿': 100000000,
 			'W': 10000,
 			'w': 10000,
 			'万': 10000,

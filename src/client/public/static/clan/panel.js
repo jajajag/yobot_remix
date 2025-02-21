@@ -112,6 +112,10 @@ var vm = new Vue({
                 return '百万';
             } else if (this.damage < 100000000) {
                 return '千万';
+            } else if (this.damage < 1000000000) {
+                return '亿';
+            } else if (this.damage < 10000000000) {
+                return '十亿';
             } else {
                 return '`(*>﹏<*)′';
             }

@@ -25,9 +25,9 @@ var vm = new Vue({
     },
     methods: {
         update: function (event) {
-            var flag = this.check_level_by_cycle()
+            var [flag, msg] = this.check_level_by_cycle()
             if (!flag) {
-                alert('阶段对应周目错误。\n不同阶段的周目范围不能重叠，且下阶段开始周目必须等于上阶段结束周目加一');
+                alert(msg);
                 return
             }
             this.setting.web_mode_hint = false;
@@ -38,7 +38,7 @@ var vm = new Vue({
                     csrf_token: csrf_token,
                 },
             ).then(function (res) {
-                if (res.data.code == 0) {
+                if (res.data.code === 0) {
                     alert('设置成功，重启机器人后生效');
                 } else {
                     alert('设置失败：' + res.data.message);
@@ -124,15 +124,21 @@ var vm = new Vue({
             this.setting.level_by_cycle[area].pop();
         },
         check_level_by_cycle: function () {
+            const regionMap = {cn: "国服", jp: "日服", tw: "台服"};
             for (const area in this.setting.level_by_cycle) {
-                var last_level_max = 0
+                var last_level_max = this.setting.level_by_cycle[area][0][0]-1;
+                var has_level_starting_with_1 = false;
                 for (const level_info of this.setting.level_by_cycle[area]) {
-                    if (level_info[0] != last_level_max + 1 || level_info[0] > level_info[1])
-                        return false
+                    if (level_info[0] !== last_level_max + 1 || level_info[0] > level_info[1])
+                        return [false,`${regionMap[area]}阶段对应周目错误。\n不同阶段的周目范围不能重叠，且下阶段开始周目必须等于上阶段结束周目加一`];
+                    if (level_info[0] === 1)
+                        has_level_starting_with_1 = true;
                     last_level_max = level_info[1]
                 }
+                if (!has_level_starting_with_1)
+                    return [false, `${regionMap[area]}阶段对应周目错误。\n至少要有一个阶段以1周目开始`];
             }
-            return true
+            return [true,'']
         }
     },
     delimiters: ['[[', ']]'],

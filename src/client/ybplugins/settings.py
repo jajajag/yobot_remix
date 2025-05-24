@@ -393,6 +393,8 @@ class Setting:
 
             boss_infos:dict = self.setting['boss']
             for server, _ in boss_infos.items():
+                if server == "tw":
+                    continue
                 real_url = url.format(server)
                 try:
                     async with aiohttp.ClientSession() as ses:

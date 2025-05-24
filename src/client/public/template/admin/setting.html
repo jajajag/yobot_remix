@@ -123,7 +123,7 @@
       <el-collapse v-model="activeNames" @change="bossSetting = !bossSetting">
         <el-collapse-item title="boss设置（点击展开）" name="1">
           <div :hidden="!bossSetting">
-            <el-button style="background-color: greenyellow;font-size: medium;" @click="auto_get_boss_data()">自动获取所有boss数据</el-button>
+            <el-button style="background-color: greenyellow;font-size: medium;" @click="auto_get_boss_data()">自动获取所有boss数据（除台服）</el-button>
             <div v-for="area_health, area in setting.boss" style="margin-bottom: 5%;">
               <h4 style="margin-bottom: -2%;">[[ {jp:"日服",tw:"台服",cn:"国服",eff:"得分系数"}[area] ]]</h4>
               <table>

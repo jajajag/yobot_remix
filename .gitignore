@@ -6,3 +6,4 @@ src/client/public/static/aya.ico
 src/client/venv
 src/client/dist
 src/client/build
+*.swp

@@ -1499,7 +1499,7 @@ def challenge_record(self, group_id):
             continue
         for i in range(len(count_blade_members[blade_num])):
             name = self._get_nickname_by_qqid(count_blade_members[blade_num][i])
-            back_msg.append(f"{i == len(count_blade_members[blade_count])-1 and '┖' or '┣'}{name}")
+            back_msg.append(f"{i == len(count_blade_members[blade_num])-1 and '┖' or '┣'}{name}")
     #for blade_num in blade_list.keys():
     #    back_msg.append(f"已出{blade_num}刀：{blade_list[blade_num]}")
     back_msg.append(f"今天已出 {total_blade_num}/{len(members)*3}")

@@ -1455,7 +1455,7 @@ def challenge_record(self, group_id):
 
     total_blade_num = 0             #总出刀数
     total_continue_blade_num = 0    #总补偿刀数量
-    count_blade_members = {0.0: []}        #统计没出满刀的成员
+    count_blade_members = {}        #统计没出满刀的成员
     #blade_list = {}
     for member in members:
         challenge_records:List[Clan_challenge] = Clan_challenge.select().where(
@@ -1483,7 +1483,7 @@ def challenge_record(self, group_id):
         #else: blade_list[member_num] += 1
         # JAG: 统计每个成员的出刀数量
         if member_num not in count_blade_members:
-            count_blade_members[member_num] = []
+            count_blade_members[float(member_num)] = []
         count_blade_members[member_num].append(member.qqid)
         #else:
         #    count_blade_members[member_num].append(member.qqid)

@@ -1464,29 +1464,29 @@ def challenge_record(self, group_id):
             Clan_challenge.challenge_pcrdate == date,
             Clan_challenge.qqid == member.qqid
         ).order_by(Clan_challenge.cid)
-        if len(challenge_records) != 0:
-            member_num = 0            #单个成员出刀数
-            continue_blade_num = 0    #单个成员剩余补偿刀数量
-            for c in challenge_records:
-                #完整刀收尾算0.5刀
-                if c.boss_health_remain == 0 and not c.is_continue:
-                    member_num += 0.5
-                    continue_blade_num += 1
-                elif c.is_continue:    #补偿刀算0.5刀
-                    member_num += 0.5
-                    continue_blade_num -= 1
-                else: member_num += 1
-            total_blade_num += member_num
-            total_continue_blade_num += continue_blade_num
-            # JAG: Use count_blade_members instead
-            #if member_num not in blade_list: blade_list[member_num] = 1
-            #else: blade_list[member_num] += 1
-            # JAG: 统计每个成员的出刀数量
-            if member_num not in count_blade_members:
-                count_blade_members[member_num] = []
-            count_blade_members[member_num].append(member.qqid)
-        else:
-            count_blade_members[0].append(member.qqid)
+        #if len(challenge_records) != 0:
+        member_num = 0            #单个成员出刀数
+        continue_blade_num = 0    #单个成员剩余补偿刀数量
+        for c in challenge_records:
+            #完整刀收尾算0.5刀
+            if c.boss_health_remain == 0 and not c.is_continue:
+                member_num += 0.5
+                continue_blade_num += 1
+            elif c.is_continue:    #补偿刀算0.5刀
+                member_num += 0.5
+                continue_blade_num -= 1
+            else: member_num += 1
+        total_blade_num += member_num
+        total_continue_blade_num += continue_blade_num
+        # JAG: Use count_blade_members instead
+        #if member_num not in blade_list: blade_list[member_num] = 1
+        #else: blade_list[member_num] += 1
+        # JAG: 统计每个成员的出刀数量
+        if member_num not in count_blade_members:
+            count_blade_members[member_num] = []
+        count_blade_members[member_num].append(member.qqid)
+        #else:
+        #    count_blade_members[member_num].append(member.qqid)
 
     back_msg = []
     back_msg.append(f"待出补偿刀数量：{total_continue_blade_num}")

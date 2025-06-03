@@ -1502,7 +1502,7 @@ def challenge_record(self, group_id):
             back_msg.append(f"{i == len(count_blade_members[blade_num])-1 and '┖' or '┣'}{name}")
     #for blade_num in blade_list.keys():
     #    back_msg.append(f"已出{blade_num}刀：{blade_list[blade_num]}")
-    back_msg.append(f"今天已出 {total_blade_num}/{len(members)*3}")
+    back_msg.append(f"今天已出 {float(total_blade_num)}/{len(members)*3}")
     return '\n'.join(back_msg)
 
 

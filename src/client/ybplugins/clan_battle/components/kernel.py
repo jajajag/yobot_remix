@@ -246,7 +246,7 @@ def execute(self, match_num, ctx):
 		return back_msg
 
 	elif match_num == 9:  # 出刀记录
-		match = re.match(r'^(查刀|出刀(记录|情况|状况|详情)) *$', cmd)
+		match = re.match(r'^出刀(记录|情况|状况|详情) *$', cmd)
 		if not match: return
 		try:
 			back_msg = self.challenge_record(group_id)

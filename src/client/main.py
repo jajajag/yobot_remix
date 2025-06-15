@@ -135,6 +135,9 @@ def main():
                          coalesce=True,
                          max_instances=1,
                          misfire_grace_time=60)
+    # JAG: 适配APScheduler>=3.9.0
+    @cqbot.on_startup
+    async def on_startup():
         sche.start()
 
     print("初始化完成，启动服务...")

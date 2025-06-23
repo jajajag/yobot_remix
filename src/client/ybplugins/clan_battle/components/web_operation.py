@@ -236,8 +236,10 @@ def register_routes(self, app: Quart):
 					is_continue = payload['is_continue']
 					behalf = payload['behalf']
 					boss_num = payload['boss_num']
-					if behalf == user_id: behalf = None
-					status = self.apply_for_challenge(is_continue, group_id, user_id, boss_num, behalf)
+					if behalf == user_id: 
+						status = self.apply_for_challenge(is_continue, group_id, user_id, boss_num)
+					else:
+						status = self.apply_for_challenge(is_continue, group_id, user_id, boss_num, behalf)
 				except ClanBattleError as e:
 					_logger.info('网页 失败 {} {} {}'.format(user_id, group_id, action))
 					return jsonify(

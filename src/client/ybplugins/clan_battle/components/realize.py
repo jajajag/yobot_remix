@@ -1471,22 +1471,24 @@ def challenge_record(self, group_id, behalf):
         member_num = 0            #单个成员出刀数
         continue_blade_num = 0    #单个成员剩余补偿刀数量
         for c in challenge_records:
+            #完整刀收尾算0.5刀
+            if c.boss_health_remain == 0 and not c.is_continue:
+                blade_num = 0.5
+                continue_blade_num += 1
+            elif c.is_continue:    #补偿刀算0.5刀
+                blade_num = 0.5
+                continue_blade_num -= 1
+            else: blade_num = 1
+            member_num += blade_num
             # JAG: 添加该成员的出刀情况（周目/几王/伤害/补偿）
             if c.qqid == behalf:
                 behalf_blade_list.append((
                     c.boss_cycle,
                     c.boss_num,
                     c.challenge_damage,
-                    c.is_continue
+                    c.is_continue,
+                    blade_num
                 ))
-            #完整刀收尾算0.5刀
-            if c.boss_health_remain == 0 and not c.is_continue:
-                member_num += 0.5
-                continue_blade_num += 1
-            elif c.is_continue:    #补偿刀算0.5刀
-                member_num += 0.5
-                continue_blade_num -= 1
-            else: member_num += 1
         total_blade_num += member_num
         total_continue_blade_num += continue_blade_num
         # JAG: Use count_blade_members instead
@@ -1519,10 +1521,10 @@ def challenge_record(self, group_id, behalf):
     else:
         back_msg.append(f"{self._get_nickname_by_qqid(behalf)}的出刀情况：")
         total_blade_num = 0
-        for cycle, boss_num, damage, is_continue in behalf_blade_list:
-            total_blade_num += 0.5 if is_continue else 1
+        for cycle, boss, damage, is_continue, blade_num in behalf_blade_list:
+            total_blade_num += blade_num
             back_msg.append(
-                f'({cycle}-{boss_num}) {damage}{"b" if is_continue else ""}')
+                f'({cycle}-{boss}) {damage}{"b" if is_continue else ""}')
         back_msg.append(f"今天已出 {float(total_blade_num)}/3")
     return '\n'.join(back_msg)
 

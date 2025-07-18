@@ -246,10 +246,11 @@ def execute(self, match_num, ctx):
 		return back_msg
 
 	elif match_num == 9:  # 出刀记录
-		match = re.match(r'^(查刀|出刀(记录|情况|状况|详情)) *$', cmd)
+		match = re.match(r'^(查刀|出刀(记录|情况|状况|详情)) *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *$', cmd)
 		if not match: return
+		behalf = match.group(3) and int(match.group(3))
 		try:
-			back_msg = self.challenge_record(group_id)
+			back_msg = self.challenge_record(group_id, behalf)
 		except ClanBattleError as e:
 			_logger.info('群聊 失败 {} {} {}'.format(user_id, group_id, cmd))
 			return str(e)

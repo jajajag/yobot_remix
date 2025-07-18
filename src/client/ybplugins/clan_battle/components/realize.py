@@ -1447,16 +1447,19 @@ def challenger_info(self, group_id):
     return f"[CQ:image,file={base64_str}]"
 
 #出刀记录
-def challenge_record(self, group_id):
+def challenge_record(self, group_id, behalf):
     group:Clan_group = get_clan_group(self, group_id)
     if group is None : raise GroupNotExist
     date, _ = pcr_datetime(area = group.game_server)
-    members:List[Clan_member] = Clan_member.select().where(Clan_member.group_id == group_id)
+    members:List[Clan_member] = Clan_member.select().where(
+            Clan_member.group_id == group_id)
 
     total_blade_num = 0             #总出刀数
     total_continue_blade_num = 0    #总补偿刀数量
     count_blade_members = {}        #统计没出满刀的成员
+    behalf_blade_list = []          #查询指定成员的出刀情况
     #blade_list = {}
+
     for member in members:
         challenge_records:List[Clan_challenge] = Clan_challenge.select().where(
             Clan_challenge.gid == group_id,
@@ -1468,6 +1471,14 @@ def challenge_record(self, group_id):
         member_num = 0            #单个成员出刀数
         continue_blade_num = 0    #单个成员剩余补偿刀数量
         for c in challenge_records:
+            # JAG: 添加该成员的出刀情况（周目/几王/伤害/补偿）
+            if c.qqid == behalf:
+                behalf_blade_list.append((
+                    c.boss_cycle,
+                    c.boss_num,
+                    c.challenge_damage,
+                    c.is_countinue
+                ))
             #完整刀收尾算0.5刀
             if c.boss_health_remain == 0 and not c.is_continue:
                 member_num += 0.5
@@ -1489,20 +1500,30 @@ def challenge_record(self, group_id):
         #    count_blade_members[member_num].append(member.qqid)
 
     back_msg = []
-    back_msg.append(f"待出补偿刀数量：{total_continue_blade_num}")
-    #back_msg.append(f"已出0刀的成员数量：{len(zero_blade_members)}")
-    for blade_num in sorted(count_blade_members.keys()):
-        back_msg.append(
-                f"已出{blade_num}刀：{len(count_blade_members[blade_num])}")
-        # JAG: 出完刀的成员不显示
-        if blade_num >= 3:
-            continue
-        for i in range(len(count_blade_members[blade_num])):
-            name = self._get_nickname_by_qqid(count_blade_members[blade_num][i])
-            back_msg.append(f"{i == len(count_blade_members[blade_num])-1 and '┖' or '┣'}{name}")
-    #for blade_num in blade_list.keys():
-    #    back_msg.append(f"已出{blade_num}刀：{blade_list[blade_num]}")
-    back_msg.append(f"今天已出 {float(total_blade_num)}/{len(members)*3}")
+    if not behalf:
+        back_msg.append(f"待出补偿刀数量：{total_continue_blade_num}")
+        #back_msg.append(f"已出0刀的成员数量：{len(zero_blade_members)}")
+        for blade_num in sorted(count_blade_members.keys()):
+            back_msg.append(
+                    f"已出{blade_num}刀：{len(count_blade_members[blade_num])}")
+            # JAG: 出完刀的成员不显示
+            if blade_num >= 3:
+                continue
+            for i in range(len(count_blade_members[blade_num])):
+                name = self._get_nickname_by_qqid(count_blade_members[blade_num][i])
+                back_msg.append(f"{i == len(count_blade_members[blade_num])-1 and '┖' or '┣'}{name}")
+        #for blade_num in blade_list.keys():
+        #    back_msg.append(f"已出{blade_num}刀：{blade_list[blade_num]}")
+        back_msg.append(f"今天已出 {float(total_blade_num)}/{len(members)*3}")
+    # JAG: 指定成员的出刀情况
+    else:
+        back_msg.append(f"{self._get_nickname_by_qqid(behalf)}的出刀情况：")
+        total_blade_num = 0
+        for cycle, boss_num, damage, is_continue in behalf_blade_list:
+            blade_num += 0.5 if is_continue else 1
+            back_msg.append(
+                f'({cycle}-{boss_num}) {damage}{"b" if is_continue else ""}')
+        back_msg.append(f"今天已出 {float(total_blade_num)}/3")
     return '\n'.join(back_msg)
 
 

@@ -1520,7 +1520,7 @@ def challenge_record(self, group_id, behalf):
         back_msg.append(f"{self._get_nickname_by_qqid(behalf)}的出刀情况：")
         total_blade_num = 0
         for cycle, boss_num, damage, is_continue in behalf_blade_list:
-            blade_num += 0.5 if is_continue else 1
+            total_blade_num += 0.5 if is_continue else 1
             back_msg.append(
                 f'({cycle}-{boss_num}) {damage}{"b" if is_continue else ""}')
         back_msg.append(f"今天已出 {float(total_blade_num)}/3")

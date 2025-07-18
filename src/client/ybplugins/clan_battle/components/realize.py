@@ -1477,7 +1477,7 @@ def challenge_record(self, group_id, behalf):
                     c.boss_cycle,
                     c.boss_num,
                     c.challenge_damage,
-                    c.is_countinue
+                    c.is_continue
                 ))
             #完整刀收尾算0.5刀
             if c.boss_health_remain == 0 and not c.is_continue:

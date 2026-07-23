@@ -105,13 +105,18 @@ def main():
 
     @cqbot.on_message
     async def handle_msg(context):
-        if context["message_type"] == "group" or context["message_type"] == "private":
+        if context["message_type"] in ["group", "private"]:
             reply = await bot.proc_async(context)
         else:
             reply = None
         if isinstance(reply, str) and reply != "":
-            return {'reply': insert_zwsp(reply),
-                    'at_sender': False}
+            #return {'reply': insert_zwsp(reply), 'at_sender': False}
+            await cqbot.send_msg(
+                message_type=context["message_type"],
+                group_id=context.get("group_id"),
+                user_id=context.get("user_id"),
+                message=insert_zwsp(reply)
+            )
         else:
             return None
 

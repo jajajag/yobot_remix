@@ -111,12 +111,15 @@ def main():
             reply = None
         if isinstance(reply, str) and reply != "":
             #return {'reply': insert_zwsp(reply), 'at_sender': False}
-            await cqbot.send_msg(
-                message_type=context["message_type"],
-                group_id=context.get("group_id"),
-                user_id=context.get("user_id"),
-                message=insert_zwsp(reply)
-            )
+            params = {
+                "message_type": context["message_type"],
+                "message": insert_zwsp(reply)
+            }
+            if context["message_type"] == "group":
+                params["group_id"] = context["group_id"]
+            elif context["message_type"] == "private":
+                params["user_id"] = context["user_id"]
+            await cqbot.send_msg(**params)
         else:
             return None
 

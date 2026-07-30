@@ -20,6 +20,8 @@ class Message:
 
     @staticmethod
     def match(cmd: str) -> int:
+        # JAG: Temporarily disable links
+        return 0
         if cmd == "ver" or cmd == "V" or cmd == "version":
             return 99
         elif cmd == "帮助" or cmd == "help":

@@ -30,7 +30,7 @@ class Message:
             return 0
 
     def execute(self, match_num: int, msg: dict) -> dict:
-        if ctx['message_type'] != 'private':
+        if msg['message_type'] != 'private':
             return {
                 'reply': '请私聊使用',
                 'block': True

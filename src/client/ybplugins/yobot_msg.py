@@ -20,8 +20,6 @@ class Message:
 
     @staticmethod
     def match(cmd: str) -> int:
-        # JAG: Temporarily disable links
-        return 0
         if cmd == "ver" or cmd == "V" or cmd == "version":
             return 99
         elif cmd == "帮助" or cmd == "help":
@@ -32,6 +30,11 @@ class Message:
             return 0
 
     def execute(self, match_num: int, msg: dict) -> dict:
+        if ctx['message_type'] != 'private':
+            return {
+                'reply': '请私聊使用',
+                'block': True
+        }
         if match_num == 99:
             reply = self.version
         elif match_num == 98:

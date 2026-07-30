@@ -110,7 +110,8 @@ def main():
         else:
             reply = None
         if isinstance(reply, str) and reply != "":
-            #return {'reply': insert_zwsp(reply), 'at_sender': False}
+            return {'reply': insert_zwsp(reply), 'at_sender': False}
+            '''
             # 适配SnowLuma的格式
             params = {
                 "message_type": context["message_type"],
@@ -124,6 +125,7 @@ def main():
                 if context.get("sub_type") == "group":
                     params["group_id"] = context["sender"]["group_id"]
             await cqbot.send_msg(**params)
+            '''
         else:
             return None
 

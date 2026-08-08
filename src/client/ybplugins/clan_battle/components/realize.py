@@ -695,6 +695,12 @@ def challenge(self,
 	challenge.save()
 	group.save()
 
+	# 出刀者若预约了该boss（无论是否击杀），出刀成功后将出刀者本人从预约列表中移除（保留其他人的预约）
+	subscribe_handler = SubscribeHandler(group=group)
+	if subscribe_handler.is_subscribed(qqid, int(boss_num)):
+		subscribe_handler.unsubscribe(qqid, int(boss_num))
+		subscribe_handler.save()
+
 	# 取消申请出刀
 	if defeat: 
 		self.take_it_of_the_tree(group_id, qqid, boss_num, 1, send_web = False)#只是通知下树而已
@@ -821,7 +827,7 @@ def subscribe_remind(self, group_id:Groupid, boss_num):
 		group_id = group_id,
 		message = hint_message,
 	))
-	subscribe_cancel(self, group_id, boss_num)
+	# 仅发送预约提醒，不清空预约列表（预约者出刀击杀boss后由challenge单独移除）
 
 #取消预约
 def subscribe_cancel(self, group_id:Groupid, boss_num, qqid = None):

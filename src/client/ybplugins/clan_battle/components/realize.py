@@ -695,21 +695,21 @@ def challenge(self,
     challenge.save()
     group.save()
 
-	# 出刀者若预约了该boss（无论是否击杀），出刀成功后将出刀者本人从预约列表中移除（保留其他人的预约）
-	subscribe_handler = SubscribeHandler(group=group)
-	if subscribe_handler.is_subscribed(qqid, int(boss_num)):
-		subscribe_handler.unsubscribe(qqid, int(boss_num))
-		subscribe_handler.save()
+    # 出刀者若预约了该boss（无论是否击杀），出刀成功后将出刀者本人从预约列表中移除（保留其他人的预约）
+    subscribe_handler = SubscribeHandler(group=group)
+    if subscribe_handler.is_subscribed(qqid, int(boss_num)):
+        subscribe_handler.unsubscribe(qqid, int(boss_num))
+        subscribe_handler.save()
 
-	# 取消申请出刀
-	if defeat: 
-		self.take_it_of_the_tree(group_id, qqid, boss_num, 1, send_web = False)#只是通知下树而已
-		self.cancel_blade(group_id, qqid, boss_num, 2, False)
-		if check_next_boss(self, group_id, boss_num):
-			subscribe_remind(self, group_id, boss_num)
-	else:
-		try:self.cancel_blade(group_id, qqid, send_web = False)
-		except:pass
+    # 取消申请出刀
+    if defeat: 
+        self.take_it_of_the_tree(group_id, qqid, boss_num, 1, send_web = False)#只是通知下树而已
+        self.cancel_blade(group_id, qqid, boss_num, 2, False)
+        if check_next_boss(self, group_id, boss_num):
+            subscribe_remind(self, group_id, boss_num)
+    else:
+        try:self.cancel_blade(group_id, qqid, send_web = False)
+        except:pass
 
     nik = self._get_nickname_by_qqid(qqid)
     behalf_nik = behalf and f'（{self._get_nickname_by_qqid(behalf)}代）' or ''
@@ -810,24 +810,24 @@ def subscribe(self, group_id:Groupid, qqid:QQid, msg, note):
 
 #预约提醒
 def subscribe_remind(self, group_id:Groupid, boss_num):
-	group:Clan_group = get_clan_group(self, group_id)
-	subscribe_handler = SubscribeHandler(group=group)
-	boss_num = int(boss_num)
-	if not subscribe_handler.get_subscribe_list(boss_num):
-		return
-	hint_message = f'船新的{boss_num}王来惹~ _(:з)∠)_\n'
-	for user_id in subscribe_handler.get_subscribe_list(boss_num):
-		hint_message += atqq(user_id)
-		note = subscribe_handler.get_note(user_id, boss_num)
-		hint_message += ('：' + note) if note else ''
-		hint_message += '\n'
-	hint_message = hint_message[:-1]
-	asyncio.ensure_future(self.api.send_group_msg(
-		self_id = who_am_i(group_id), 
-		group_id = group_id,
-		message = hint_message,
-	))
-	# 仅发送预约提醒，不清空预约列表（预约者出刀击杀boss后由challenge单独移除）
+    group:Clan_group = get_clan_group(self, group_id)
+    subscribe_handler = SubscribeHandler(group=group)
+    boss_num = int(boss_num)
+    if not subscribe_handler.get_subscribe_list(boss_num):
+        return
+    hint_message = f'船新的{boss_num}王来惹~ _(:з)∠)_\n'
+    for user_id in subscribe_handler.get_subscribe_list(boss_num):
+        hint_message += atqq(user_id)
+        note = subscribe_handler.get_note(user_id, boss_num)
+        hint_message += ('：' + note) if note else ''
+        hint_message += '\n'
+    hint_message = hint_message[:-1]
+    asyncio.ensure_future(self.api.send_group_msg(
+        self_id = who_am_i(group_id), 
+        group_id = group_id,
+        message = hint_message,
+    ))
+    # 仅发送预约提醒，不清空预约列表（预约者出刀击杀boss后由challenge单独移除）
 
 #取消预约
 def subscribe_cancel(self, group_id:Groupid, boss_num, qqid = None):

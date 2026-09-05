@@ -339,7 +339,8 @@ def execute(self, match_num, ctx):
 
     elif match_num == 15:  # 面板
         if len(cmd) != 2: return
-        return f'公会战面板：\n{url}\n建议添加到浏览器收藏夹或桌面快捷方式'
+        #return f'公会战面板：\n{url}\n建议添加到浏览器收藏夹或桌面快捷方式'
+        return f'请私聊登录查看'
 
     elif match_num == 16:  # SL
         match = re.match(r'^(?:SL|sl) *([\?？])? *(?:\[CQ:at,qq=(\d+)(?:,name=[^\]]*)?\])? *([\?？])? *$', cmd)

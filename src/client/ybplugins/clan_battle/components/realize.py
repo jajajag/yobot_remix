@@ -128,9 +128,10 @@ async def _update_all_group_members_async(self, group_id):
         membership = Clan_member.get_or_create(group_id = group_id, qqid = member['user_id'])[0]
         user.nickname = member.get('card') or member['nickname']
         user.clan_group_id = group_id
-        if user.authority_group >= 10:
-            user.authority_group = (100 if member['role'] == 'member' else 10)
-            membership.role = user.authority_group
+        membership.role = 100 if member['role'] == 'member' else 10
+        if 10 <= user.authority_group <= 100:
+            # 权限数值越小权限越高，自动同步只提升、不降级。
+            user.authority_group = min(user.authority_group, membership.role)
         user.save()
         membership.save()
 

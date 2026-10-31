@@ -390,9 +390,10 @@ def execute(self, match_num, ctx):
             membership = Clan_member.get_or_create(group_id = group_id, qqid = user_id)[0]
             user.nickname = nickname
             user.clan_group_id = group_id
-            if user.authority_group >= 10:
-                user.authority_group = (100 if ctx['sender']['role'] == 'member' else 10)                    
-                membership.role = user.authority_group
+            membership.role = 100 if ctx['sender']['role'] == 'member' else 10
+            if 10 <= user.authority_group <= 100:
+                # 权限数值越小权限越高，自动同步只提升、不降级。
+                user.authority_group = min(user.authority_group, membership.role)
             user.save()
             membership.save()
             _logger.info('群聊 成功 {} {} {}'.format(user_id, group_id, cmd))
